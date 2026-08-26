@@ -11,9 +11,6 @@ type Validator interface{ Validate(string, float64) error }
 type weightValidator struct{}
 
 func (v *weightValidator) Validate(_ string, weight float64) error {
-	if v == nil {
-		return nil
-	}
 	if weight <= 0 {
 		return ErrInvalidWeight
 	}
@@ -21,8 +18,9 @@ func (v *weightValidator) Validate(_ string, weight float64) error {
 }
 func NewValidator(cfg *ruleconfig.Config) Validator {
 	if !cfg.Enforce {
-		var validator *weightValidator
-		return validator
+		// 未启用校验时显式返回 nil 接口；不要返回 typed-nil 指针，
+		// 否则调用方 e.validator != nil 判定为 true，引发无效规则被静默放行。
+		return nil
 	}
 	return &weightValidator{}
 }
