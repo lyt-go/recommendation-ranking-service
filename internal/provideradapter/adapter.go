@@ -18,7 +18,7 @@ func New(backend Backend) *Adapter { return &Adapter{backend: backend} }
 func (a *Adapter) Fetch() (string, error) {
 	value, err := a.backend.Fetch()
 	if err != nil {
-		return "", fmt.Errorf("provider failed: %v", err)
+		return "", fmt.Errorf("provider failed: %w", err)
 	}
 	return value, nil
 }
